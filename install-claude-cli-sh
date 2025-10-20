@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "Installing Claude Code CLI on Raspberry Pi (aarch64)"
+
+sudo apt update && sudo apt install -y curl build-essential
+
+echo "Installing Node.js (v20.x)"
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+echo "Node version: $(node --version)"
+echo "npm version: $(npm --version)"
+
+echo "Installing Claude Code CLI globally"
+sudo npm install -g @anthropic-ai/claude-code
+
+echo "Adding API key to ~/.bashrc"
+read -p "Enter your ANTHROPIC API key (it will be appended to ~/.bashrc): " APIKEY
+echo "export ANTHROPIC_API_KEY=\"$APIKEY\"" >> ~/.bashrc
+
+echo "Installation complete. Please reload your shell (e.g., source ~/.bashrc) or open a new terminal."
+echo "Run: claude --version   then try: claude \"Explain this project\""
+
