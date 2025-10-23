@@ -1,0 +1,29 @@
+#Ignore AI Stuff
+.claude/
+AGENTS.md
+
+# Rust
+multi-model-mcp/mcp-server/target/
+multi-model-mcp/mcp-server/Cargo.lock
+
+# Node
+multi-model-mcp/vscode-extension/node_modules/
+multi-model-mcp/vscode-extension/out/
+multi-model-mcp/vscode-extension/*.vsix
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local

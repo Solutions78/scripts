@@ -1,0 +1,79 @@
+{
+  "name": "multi-model-mcp",
+  "displayName": "Multi-Model MCP Assistant",
+  "description": "Multi-model code development assistant using Anthropic Claude and OpenAI GPT via MCP",
+  "version": "0.1.0",
+  "publisher": "modular-misfits",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Machine Learning",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "multiModelMcp.generateCode",
+        "title": "Multi-Model: Generate Code"
+      },
+      {
+        "command": "multiModelMcp.reviewCode",
+        "title": "Multi-Model: Review Code"
+      },
+      {
+        "command": "multiModelMcp.switchModel",
+        "title": "Multi-Model: Switch AI Provider"
+      },
+      {
+        "command": "multiModelMcp.listModels",
+        "title": "Multi-Model: List Available Models"
+      },
+      {
+        "command": "multiModelMcp.addContext",
+        "title": "Multi-Model: Add File to Context"
+      },
+      {
+        "command": "multiModelMcp.clearContext",
+        "title": "Multi-Model: Clear Context"
+      }
+    ],
+    "configuration": {
+      "title": "Multi-Model MCP",
+      "properties": {
+        "multiModelMcp.serverPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the multi-model-mcp server binary. Leave empty for auto-detection."
+        },
+        "multiModelMcp.debugMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable debug logging for the MCP server"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.80.0",
+    "@typescript-eslint/eslint-plugin": "^8.x",
+    "@typescript-eslint/parser": "^8.x",
+    "eslint": "^9.x",
+    "typescript": "^5.6.0",
+    "@vscode/vsce": "^3.x"
+  },
+  "dependencies": {}
+}
