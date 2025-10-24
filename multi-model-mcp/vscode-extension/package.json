@@ -7,11 +7,16 @@
   "engines": {
     "vscode": "^1.92.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modular-misfits/multi-model-mcp.git"
+  },
   "main": "./out/extension.js",
   "scripts": {
     "vscode:prepublish": "tsc -p ./",
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
   },
   "activationEvents": [
     "onView:misfitChat.view",
@@ -72,6 +77,7 @@
   "devDependencies": {
     "@types/node": "^24.9.1",
     "@types/vscode": "^1.92.0",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "@vscode/vsce": "^3.0.0"
   }
 }
