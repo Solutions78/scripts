@@ -1,0 +1,93 @@
+:root {
+    --fg: var(--vscode-editor-foreground);
+    --bg: var(--vscode-editor-background);
+    --panel: var(--vscode-sideBar-background);
+    --muted: var(--vscode-descriptionForeground);
+    --accent: var(--vscode-button-background);
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    color: var(--fg);
+    background: var(--bg);
+    margin: 0;
+    font-family: var(--vscode-font-family, system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
+}
+
+.watermark {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+#app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+    padding: 10px;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.welcome {
+    font-weight: 600;
+}
+
+.controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.inputRow {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+}
+
+#prompt {
+    width: 100%;
+    padding: 8px;
+}
+
+#send,
+#refresh {
+    padding: 6px 10px;
+}
+
+#results {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.card {
+    background: var(--panel);
+    border: 1px solid rgba(127, 127, 127, 0.2);
+    border-radius: 6px;
+    padding: 8px 10px;
+}
+
+.section h3 {
+    margin: 6px 0;
+}
+
+.busy {
+    font-style: italic;
+    color: var(--muted);
+}

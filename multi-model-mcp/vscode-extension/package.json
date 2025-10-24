@@ -15,7 +15,9 @@
   },
   "activationEvents": [
     "onView:misfitChat.view",
+    "onView:misfitDashboard.view",
     "onCommand:multiModelMcp.openChat",
+    "onCommand:multiModelMcp.openDashboard",
     "onCommand:multiModelMcp.refreshModels"
   ],
   "contributes": {
@@ -33,6 +35,10 @@
         {
           "id": "misfitChat.view",
           "name": "Misfit Chat"
+        },
+        {
+          "id": "misfitDashboard.view",
+          "name": "Misfit Dashboard"
         }
       ]
     },
@@ -40,6 +46,10 @@
       {
         "command": "multiModelMcp.openChat",
         "title": "Multi-Model: Open Misfit Chat"
+      },
+      {
+        "command": "multiModelMcp.openDashboard",
+        "title": "Multi-Model: Open Misfit Dashboard"
       },
       {
         "command": "multiModelMcp.refreshModels",
@@ -59,8 +69,8 @@
   "categories": [
     "Other"
   ],
-  "dependencies": {},
   "devDependencies": {
+    "@types/node": "^24.9.1",
     "@types/vscode": "^1.92.0",
     "typescript": "^5.6.3"
   }

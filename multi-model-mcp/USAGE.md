@@ -97,15 +97,6 @@ View all models available from configured providers.
 
 **Tool**: `local_map`
 
-### 7. Misfit Sidebar Chat
-
-1. Open Misfit MCP in the activity bar and select Misfit Chat.
-2. Choose a model from the dropdown.
-3. Enter a prompt and press Send.
-4. The response lists only Accomplishments and How to use it.
-5. Background actions are recorded in docs/versions.md with a timestamp, model, tools, args, and a short file change digest.
-6. The watermark comes from mcp-server/src/assets/misfit.png, shown at 60 percent opacity.
-
 Enumerate files and directories from a starting path with depth control for contextual awareness.
 
 **Input Parameters**:
@@ -136,8 +127,8 @@ Enumerate files and directories from a starting path with depth control for cont
       "depth": 1
     }
   ],
-  "truncated": true,  // Optional: present if entry limit exceeded
-  "timed_out": true   // Optional: present if timeout occurred
+  "truncated": true,
+  "timed_out": true
 }
 ```
 
@@ -162,6 +153,26 @@ Enumerate files and directories from a starting path with depth control for cont
 - Discover files before code generation
 - Understand directory layout for refactoring
 - Verify deployment artifacts
+
+### 7. Misfit Mission Console
+
+#### Misfit Chat
+
+1. Open the **Misfit MCP** activity bar container and select **Misfit Chat**.
+2. Choose a model from the dropdown (the last selection is remembered across sessions).
+3. Type a request and press **Send** to run the default tool plan.
+4. The response emphasizes Accomplishments and How-To steps; expand details for raw outputs.
+5. Background activity is logged in `docs/versions.md` with timestamps, model, tool list, arguments, and change digests.
+6. The chat watermark sources `mcp-server/src/assets/misfit.png` and renders at roughly 60% opacity when available.
+
+#### Misfit Dashboard
+
+1. Open **Misfit Dashboard** from the same container or run the command palette action `Multi-Model: Open Misfit Dashboard`.
+2. The **Live Runs** tab streams queued and running tool calls with color-coded states, elapsed time, and cancel/remove controls.
+3. Live runs auto-refresh every three seconds and react instantly to server events, keeping the queue self-auditing.
+4. The **History** tab parses `docs/versions.md`, exposing filters for model and tool plus expandable entries that list created, modified, and deleted paths.
+5. Click any file path within an entry to open it in the editor; use **Replay** to re-run the captured tool arguments.
+6. A subtle Misfit watermark sits at the top-right (≈30% opacity) to brand the dashboard without distracting from telemetry.
 
 ## Configuration
 

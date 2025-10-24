@@ -10,6 +10,7 @@ A Model Context Protocol (MCP) server with VSCodium extension that provides mult
 - **🔄 Model Switching**: Seamlessly switch between Anthropic Claude and OpenAI GPT
 - **📚 Context Management**: Track files and conversation context across operations
 - **🗺️ Local Map**: Enumerate project structure with depth control for contextual awareness
+- **📊 Execution Dashboard**: Mission-style console for live run monitoring, cancellation, and history replay
 
 ### Technical Highlights
 - **🦀 Rust-powered MCP server**: High-performance, type-safe implementation
@@ -106,6 +107,20 @@ Cmd/Ctrl+Shift+P → "Multi-Model: Generate Code"
 Cmd/Ctrl+Shift+P → "Multi-Model: Switch AI Provider"
 → Choose: Anthropic (Claude) or OpenAI (GPT)
 ```
+
+**Open Misfit Dashboard**:
+```
+View → Appearance → Activity Bar → Misfit MCP → Misfit Dashboard
+or Cmd/Ctrl+Shift+P → "Multi-Model: Open Misfit Dashboard"
+→ Track queued/running jobs, cancel work, replay history entries
+```
+
+### Misfit Dashboard
+
+- **Live Runs**: Displays queued and running tool calls with color-coded states, elapsed time, and inline cancel controls.
+- **Auto Refresh**: Updates every three seconds and streams run events in real time so the queue stays self-auditing.
+- **History Tab**: Parses `docs/versions.md` to surface past runs. Filter by model or tool, expand entries for file changes, and click a path to jump directly into the editor.
+- **Replay**: Use the `Replay` button on any history entry to re-issue the exact tool calls with preserved arguments.
 
 ## 🏗️ Technical Details
 
