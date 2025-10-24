@@ -1,0 +1,49 @@
+# VS Code Extension - Files to exclude from packaging
+
+# Source files (only compiled JS needed)
+src/**
+tsconfig.json
+eslint.config.mjs
+
+# Development dependencies
+node_modules/**
+!node_modules/*/package.json
+!node_modules/*/README.md
+
+# Build artifacts
+*.map
+*.ts
+
+# Test files
+test/**
+**/*.test.ts
+**/*.spec.ts
+
+# Git and version control
+.git/**
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/**
+.vscode/**
+.vscode-test/**
+
+# Documentation (keep README.md, LICENSE.md, and icon)
+CHANGELOG.md
+TODO.md
+!README.md
+!LICENSE.md
+
+# Keep icon
+!icon.png
+
+# Misc
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+.editorconfig
+.prettierrc

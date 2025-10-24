@@ -44,19 +44,21 @@ else
     MISSING_DEPS+=("npm")
 fi
 
-# Check for API keys in keychain
-echo -n "Checking for Anthropic API key... "
-if security find-generic-password -s "devsecops-orchestrator" -a "CLAUDE_API_KEY" -w &> /dev/null; then
-    echo -e "${GREEN}✓ Found in keychain${NC}"
+# Check for OAuth tokens in keychain
+echo -n "Checking for Anthropic OAuth token... "
+if security find-generic-password -s "Claude Code-credentials" -a "tony" -w &> /dev/null; then
+    echo -e "${GREEN}✓ Found in keychain (Claude Code OAuth)${NC}"
 else
-    echo -e "${YELLOW}⚠ Not found in keychain (can use env var)${NC}"
+    echo -e "${YELLOW}⚠ Not found in keychain (set ANTHROPIC_OAUTH_TOKEN env var)${NC}"
 fi
 
-echo -n "Checking for OpenAI API key... "
-if security find-generic-password -s "devsecops-orchestrator" -a "OPENAI_API_KEY" -w &> /dev/null; then
-    echo -e "${GREEN}✓ Found in keychain${NC}"
+echo -n "Checking for OpenAI credentials... "
+if security find-generic-password -s "OpenAI-OAuth" -a "oauth-token" -w &> /dev/null; then
+    echo -e "${GREEN}✓ Found OAuth token in keychain${NC}"
+elif security find-generic-password -s "devsecops-orchestrator" -a "OPENAI_API_KEY" -w &> /dev/null; then
+    echo -e "${GREEN}✓ Found API key in keychain (fallback)${NC}"
 else
-    echo -e "${YELLOW}⚠ Not found in keychain (can use env var)${NC}"
+    echo -e "${YELLOW}⚠ Not found in keychain (set OPENAI_OAUTH_TOKEN or OPENAI_API_KEY env var)${NC}"
 fi
 
 echo ""
