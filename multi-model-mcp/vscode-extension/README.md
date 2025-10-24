@@ -12,6 +12,10 @@
 
 ## Quick Start
 
+### Sidebar Chat
+
+Open the sidebar view under Misfit MCP or run the command “Multi-Model: Open Misfit Chat.” The chat shows a centered translucent Modular Misfits watermark and a welcome line: “Welcome Misfit, what we breaking today?” Pick a model from the dropdown. Each prompt runs in the background, logs a concise entry in docs/versions.md, and the UI only lists Accomplishments and How to use it for that run. Use the refresh button to reload models from the MCP server.
+
 ### Available Commands
 
 Press `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows/Linux) and type:

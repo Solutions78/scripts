@@ -9,6 +9,7 @@ A Model Context Protocol (MCP) server with VSCodium extension that provides mult
 - **🔍 Code Review**: Comprehensive analysis for bugs, security, performance, and style
 - **🔄 Model Switching**: Seamlessly switch between Anthropic Claude and OpenAI GPT
 - **📚 Context Management**: Track files and conversation context across operations
+- **🗺️ Local Map**: Enumerate project structure with depth control for contextual awareness
 
 ### Technical Highlights
 - **🦀 Rust-powered MCP server**: High-performance, type-safe implementation
@@ -69,9 +70,9 @@ codium --install-extension vscode-extension/multi-model-mcp-*.vsix
 
 ### Setting Up Credentials
 
-Your API keys are already configured in the macOS keychain under service `devsecops-orchestrator`:
-- ✅ Anthropic (Claude): `CLAUDE_API_KEY`
-- ✅ OpenAI (GPT): `OPENAI_API_KEY`
+The server automatically detects credentials from your macOS keychain:
+- ✅ Anthropic (Claude): OAuth token from service `Claude Code-credentials` (account: your username)
+- ✅ OpenAI (GPT): API key from service `devsecops-orchestrator` (account: `OPENAI_API_KEY`)
 
 Alternatively, set environment variables:
 ```bash
@@ -117,6 +118,7 @@ Cmd/Ctrl+Shift+P → "Multi-Model: Switch AI Provider"
   - `switch_model`: Dynamic provider switching
   - `list_models`: Enumerate available models
   - `add_context`, `get_context`, `clear_context`: Context management
+  - `local_map`: Filesystem enumeration with depth control and filtering
 
 ### Extension (TypeScript)
 
@@ -161,9 +163,15 @@ ls -la mcp-server/target/release/multi-model-mcp
 
 **No API keys found**:
 ```bash
-# Verify keychain entries
-security find-generic-password -s "devsecops-orchestrator" -a "CLAUDE_API_KEY" -w
+# Verify Anthropic OAuth token (from Claude Code)
+security find-generic-password -s "Claude Code-credentials" -a "$USER" -w
+
+# Verify OpenAI API key
 security find-generic-password -s "devsecops-orchestrator" -a "OPENAI_API_KEY" -w
+
+# Or check environment variables
+echo $ANTHROPIC_API_KEY
+echo $OPENAI_API_KEY
 ```
 
 **Extension logs**:

@@ -7,6 +7,7 @@ use tokio::sync::RwLock;
 pub mod code_generation;
 pub mod code_review;
 pub mod context;
+pub mod local_map;
 pub mod model_switching;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -61,6 +62,7 @@ impl ToolExecutor {
             }
             "get_context" => context::get_context(self.context.clone()).await,
             "clear_context" => context::clear_context(self.context.clone()).await,
+            "local_map" => local_map::execute(request.arguments).await,
             _ => Ok(ToolResponse {
                 success: false,
                 result: serde_json::Value::Null,

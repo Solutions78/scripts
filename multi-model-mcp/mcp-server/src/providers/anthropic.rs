@@ -15,10 +15,15 @@ pub struct AnthropicProvider {
 
 impl AnthropicProvider {
     pub fn new(api_key: String) -> Self {
-        Self {
-            client: Client::new(),
-            api_key,
-        }
+        use std::time::Duration;
+
+        let client = Client::builder()
+            .timeout(Duration::from_secs(30))
+            .connect_timeout(Duration::from_secs(10))
+            .build()
+            .expect("Failed to build HTTP client");
+
+        Self { client, api_key }
     }
 }
 

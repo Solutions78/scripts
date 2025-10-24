@@ -6,7 +6,7 @@ use anyhow::{Context, Result};
 use clap::Parser;
 use providers::{anthropic::AnthropicProvider, openai::OpenAIProvider, ProviderType};
 use serde::{Deserialize, Serialize};
-use std::io::{self, BufRead, Write};
+use std::io;
 use tools::{ToolExecutor, ToolRequest};
 use tracing::{error, info};
 
@@ -87,48 +87,74 @@ async fn main() -> Result<()> {
 
     info!("MCP Server ready. Listening on stdin...");
 
-    // Main server loop - read from stdin, write to stdout
-    let stdin = io::stdin();
-    let mut stdout = io::stdout();
-    let reader = stdin.lock();
+    // Main server loop - read from stdin with timeout, write to stdout
+    use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+    use tokio::time::{timeout, Duration};
 
-    for line in reader.lines() {
-        let line = match line {
-            Ok(l) => l,
-            Err(e) => {
-                error!("Error reading from stdin: {}", e);
-                continue;
+    let stdin = tokio::io::stdin();
+    let mut reader = BufReader::new(stdin);
+    let mut stdout = tokio::io::stdout();
+    let mut line = String::new();
+
+    loop {
+        line.clear();
+
+        // Read with 60 second timeout to detect dead clients
+        match timeout(Duration::from_secs(60), reader.read_line(&mut line)).await {
+            Ok(Ok(0)) => {
+                // EOF - client disconnected
+                info!("Client disconnected (EOF), shutting down gracefully");
+                break;
             }
-        };
+            Ok(Ok(_)) => {
+                // Successfully read a line
+                if line.trim().is_empty() {
+                    continue;
+                }
 
-        if line.trim().is_empty() {
-            continue;
-        }
-
-        let request: JsonRpcRequest = match serde_json::from_str(&line) {
-            Ok(req) => req,
-            Err(e) => {
-                error!("Failed to parse JSON-RPC request: {}", e);
-                let error_response = JsonRpcResponse {
-                    jsonrpc: "2.0".to_string(),
-                    id: None,
-                    result: None,
-                    error: Some(JsonRpcError {
-                        code: -32700,
-                        message: format!("Parse error: {}", e),
-                    }),
+                let request: JsonRpcRequest = match serde_json::from_str(&line) {
+                    Ok(req) => req,
+                    Err(e) => {
+                        error!("Failed to parse JSON-RPC request: {}", e);
+                        let error_response = JsonRpcResponse {
+                            jsonrpc: "2.0".to_string(),
+                            id: None,
+                            result: None,
+                            error: Some(JsonRpcError {
+                                code: -32700,
+                                message: format!("Parse error: {}", e),
+                            }),
+                        };
+                        let response_json = serde_json::to_string(&error_response)?;
+                        stdout.write_all(response_json.as_bytes()).await?;
+                        stdout.write_all(b"\n").await?;
+                        stdout.flush().await?;
+                        continue;
+                    }
                 };
-                writeln!(stdout, "{}", serde_json::to_string(&error_response)?)?;
-                stdout.flush()?;
+
+                let response = handle_request(request, &executor).await;
+                let response_json = serde_json::to_string(&response)?;
+                stdout.write_all(response_json.as_bytes()).await?;
+                stdout.write_all(b"\n").await?;
+                stdout.flush().await?;
+            }
+            Ok(Err(e)) => {
+                // I/O error
+                error!("Error reading from stdin: {}, shutting down", e);
+                break;
+            }
+            Err(_) => {
+                // Timeout - no input for 60 seconds
+                // Check if client is still alive by continuing to read
+                // This is normal for idle connections, just log at debug level
+                tracing::debug!("No input received for 60s, checking if client is alive");
                 continue;
             }
-        };
-
-        let response = handle_request(request, &executor).await;
-        writeln!(stdout, "{}", serde_json::to_string(&response)?)?;
-        stdout.flush()?;
+        }
     }
 
+    info!("MCP Server shutting down");
     Ok(())
 }
 
@@ -236,6 +262,32 @@ async fn handle_request(request: JsonRpcRequest, executor: &ToolExecutor) -> Jso
                         "inputSchema": {
                             "type": "object",
                             "properties": {}
+                        }
+                    },
+                    {
+                        "name": "local_map",
+                        "description": "Enumerate files and directories from a starting path with depth control",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {
+                                "path": {
+                                    "type": "string",
+                                    "description": "Starting path (default: current directory)",
+                                    "default": "."
+                                },
+                                "depth": {
+                                    "type": "integer",
+                                    "description": "Maximum depth to traverse (0-6, default: 2)",
+                                    "minimum": 0,
+                                    "maximum": 6,
+                                    "default": 2
+                                },
+                                "follow_symlinks": {
+                                    "type": "boolean",
+                                    "description": "Follow symbolic links (default: false)",
+                                    "default": false
+                                }
+                            }
                         }
                     }
                 ]

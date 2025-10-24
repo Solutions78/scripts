@@ -1,86 +1,67 @@
 {
   "name": "multi-model-mcp",
-  "displayName": "Multi-Model MCP Assistant",
-  "description": "Multi-model code development assistant using Anthropic Claude and OpenAI GPT via MCP",
-  "version": "0.1.0",
+  "displayName": "Multi-Model MCP",
+  "description": "Multi-model code assistant wired to an MCP server",
+  "version": "0.1.1",
   "publisher": "modular-misfits",
-  "icon": "icon.png",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Solutions78/scripts.git",
-    "directory": "multi-model-mcp"
-  },
-  "license": "MIT",
   "engines": {
-    "vscode": "^1.80.0"
+    "vscode": "^1.92.0"
   },
-  "categories": [
-    "Programming Languages",
-    "Machine Learning",
-    "Other"
-  ],
-  "activationEvents": [
-    "onStartupFinished"
-  ],
   "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "activationEvents": [
+    "onView:misfitChat.view",
+    "onCommand:multiModelMcp.openChat",
+    "onCommand:multiModelMcp.refreshModels"
+  ],
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "misfitContainer",
+          "title": "Misfit MCP",
+          "icon": "icon.png"
+        }
+      ]
+    },
+    "views": {
+      "misfitContainer": [
+        {
+          "id": "misfitChat.view",
+          "name": "Misfit Chat"
+        }
+      ]
+    },
     "commands": [
       {
-        "command": "multiModelMcp.generateCode",
-        "title": "Multi-Model: Generate Code"
+        "command": "multiModelMcp.openChat",
+        "title": "Multi-Model: Open Misfit Chat"
       },
       {
-        "command": "multiModelMcp.reviewCode",
-        "title": "Multi-Model: Review Code"
-      },
-      {
-        "command": "multiModelMcp.switchModel",
-        "title": "Multi-Model: Switch AI Provider"
-      },
-      {
-        "command": "multiModelMcp.listModels",
-        "title": "Multi-Model: List Available Models"
-      },
-      {
-        "command": "multiModelMcp.addContext",
-        "title": "Multi-Model: Add File to Context"
-      },
-      {
-        "command": "multiModelMcp.clearContext",
-        "title": "Multi-Model: Clear Context"
+        "command": "multiModelMcp.refreshModels",
+        "title": "Multi-Model: Refresh Models"
       }
     ],
-    "configuration": {
-      "title": "Multi-Model MCP",
-      "properties": {
-        "multiModelMcp.serverPath": {
-          "type": "string",
-          "default": "",
-          "description": "Path to the multi-model-mcp server binary. Leave empty for auto-detection."
-        },
-        "multiModelMcp.debugMode": {
-          "type": "boolean",
-          "default": false,
-          "description": "Enable debug logging for the MCP server"
+    "menus": {
+      "view/title": [
+        {
+          "command": "multiModelMcp.refreshModels",
+          "when": "view == misfitChat.view",
+          "group": "navigation@1"
         }
-      }
+      ]
     }
   },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "lint": "eslint",
-    "package": "vsce package"
-  },
+  "categories": [
+    "Other"
+  ],
+  "dependencies": {},
   "devDependencies": {
-    "@types/node": "^20.x",
-    "@types/vscode": "^1.80.0",
-    "@typescript-eslint/eslint-plugin": "^8.x",
-    "@typescript-eslint/parser": "^8.x",
-    "eslint": "^9.x",
-    "typescript": "^5.6.0",
-    "@vscode/vsce": "^3.x"
-  },
-  "dependencies": {}
+    "@types/vscode": "^1.92.0",
+    "typescript": "^5.6.3"
+  }
 }

@@ -22,9 +22,8 @@ This extension provides a multi-model AI assistant for code development, leverag
    ```
 
 3. **API Credentials**: Ensure you have either:
-   - Anthropic API key in keychain (service: "devsecops-orchestrator", account: "CLAUDE_API_KEY")
-   - OpenAI API key in keychain (service: "devsecops-orchestrator", account: "OPENAI_API_KEY")
-   - Or set environment variables: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`
+   - Anthropic: OAuth token in keychain (service: "Claude Code-credentials", account: your username) or set `ANTHROPIC_API_KEY` environment variable
+   - OpenAI: API key in keychain (service: "devsecops-orchestrator", account: "OPENAI_API_KEY") or set `OPENAI_API_KEY` environment variable
 
 ### Build and Install
 
@@ -94,6 +93,76 @@ View all models available from configured providers.
 **Clear Context**: `Multi-Model: Clear Context`
 - Removes all files and context from conversation
 
+### 6. Local Map
+
+**Tool**: `local_map`
+
+### 7. Misfit Sidebar Chat
+
+1. Open Misfit MCP in the activity bar and select Misfit Chat.
+2. Choose a model from the dropdown.
+3. Enter a prompt and press Send.
+4. The response lists only Accomplishments and How to use it.
+5. Background actions are recorded in docs/versions.md with a timestamp, model, tools, args, and a short file change digest.
+6. The watermark comes from mcp-server/src/assets/misfit.png, shown at 60 percent opacity.
+
+Enumerate files and directories from a starting path with depth control for contextual awareness.
+
+**Input Parameters**:
+- `path` (optional, default: "."): Starting directory path
+- `depth` (optional, default: 2, min: 0, max: 6): Maximum depth to traverse
+- `follow_symlinks` (optional, default: false): Whether to follow symbolic links
+
+**Behavior**:
+- Walks filesystem breadth-first from specified path up to depth
+- Skips hidden entries (names starting with `.`)
+- Excludes `node_modules` and `.git` directories
+- Reports symlinks without traversing them (unless `follow_symlinks=true`)
+- Enforces maximum 8,000 entries to prevent runaway traversals
+- 2-second timeout for performance safety
+- Returns file sizes for regular files, 0 for directories
+
+**Output**:
+```json
+{
+  "root": "/absolute/path/to/root",
+  "entries": [
+    {
+      "name": "file.txt",
+      "path": "/absolute/path/to/file.txt",
+      "is_dir": false,
+      "is_symlink": false,
+      "size_bytes": 1024,
+      "depth": 1
+    }
+  ],
+  "truncated": true,  // Optional: present if entry limit exceeded
+  "timed_out": true   // Optional: present if timeout occurred
+}
+```
+
+**Example JSON-RPC call**:
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "local_map",
+    "arguments": {
+      "path": ".",
+      "depth": 2
+    }
+  }
+}
+```
+
+**Use Cases**:
+- Get project structure for AI context
+- Discover files before code generation
+- Understand directory layout for refactoring
+- Verify deployment artifacts
+
 ## Configuration
 
 Open VSCode/Codium settings and search for "Multi-Model MCP":
@@ -135,8 +204,15 @@ Open VSCode/Codium settings and search for "Multi-Model MCP":
 
 1. **Check credentials**:
    ```bash
-   security find-generic-password -s "devsecops-orchestrator" -a "CLAUDE_API_KEY" -w
+   # Check Anthropic OAuth token (from Claude Code)
+   security find-generic-password -s "Claude Code-credentials" -a "$USER" -w
+
+   # Check OpenAI API key
    security find-generic-password -s "devsecops-orchestrator" -a "OPENAI_API_KEY" -w
+
+   # Or use environment variables
+   echo $ANTHROPIC_API_KEY
+   echo $OPENAI_API_KEY
    ```
 
 2. **Check server binary**:
